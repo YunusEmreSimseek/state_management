@@ -23,7 +23,7 @@ class TravelTabView extends StatelessWidget {
             TravelView(),
             SizedBox.shrink(),
             SizedBox.shrink(),
-            SizedBox.shrink(),
+            TravelView2(),
           ]),
         ));
   }
