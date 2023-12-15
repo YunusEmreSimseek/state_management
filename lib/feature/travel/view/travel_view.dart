@@ -3,10 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kartal/kartal.dart';
 import 'package:state_management/feature/travel/cubit/travel_cubit.dart';
 import 'package:state_management/feature/travel/model/travel_model.dart';
-import 'package:state_management/feature/travel/viewmodel/travel_states.dart';
-import 'package:state_management/feature/travel/viewmodel/travel_viewmodel.dart';
 import 'package:state_management/product/constant/color_constant.dart';
 import 'package:state_management/product/constant/string_constant.dart';
+import 'package:state_management/product/widget/bold_text.dart';
 
 class TravelView extends StatefulWidget {
   const TravelView({super.key});
@@ -24,15 +23,14 @@ class _TravelViewState extends State<TravelView> {
         listener: (context, state) {},
         builder: (context, state) {
           final read = context.read<TravelCubit>;
-          // ignore: unused_local_variable
-          final watch = context.watch<TravelCubit>;
+
           return Scaffold(
             appBar: AppBar(),
             body: Padding(
               padding: context.padding.normal,
               child: Column(
                 children: [
-                  _boldText(context, StringConstant.travelHeyJohn),
+                  const BoldText(text: StringConstant.travelHeyJohn),
                   context.sized.emptySizedHeightBoxLow3x,
                   TextField(
                     onChanged: (value) {
@@ -45,7 +43,7 @@ class _TravelViewState extends State<TravelView> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      _boldText(context, StringConstant.travelPopDes),
+                      const BoldText(text: StringConstant.travelPopDes),
                       InkWell(
                         onTap: () {
                           read().seeAllItems();
@@ -80,165 +78,33 @@ class _TravelViewState extends State<TravelView> {
       ),
     );
   }
+}
 
-  Text _boldText(BuildContext context, String text) {
-    return Text(
-      text,
-      style: context.general.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
-    );
-  }
-
-  Widget _itemsCastale(BuildContext context) {
-    return BlocSelector<TravelCubit, TravelStates, List<TravelModel>>(
-      selector: (state) {
-        if (state is TravelItemsSeeAll) {
-          if (context.read<TravelCubit>().result.isEmpty) {
-            return context.read<TravelCubit>().allItems;
-          }
-          return context.read<TravelCubit>().result;
-        } else if (state is TravelItemsLoaded) {
-          print('items loaded');
-          return state.items;
-        } else {
-          print('else');
+Widget _itemsCastale(BuildContext context) {
+  return BlocSelector<TravelCubit, TravelStates, List<TravelModel>>(
+    selector: (state) {
+      if (state is TravelItemsSeeAll) {
+        if (context.read<TravelCubit>().result.isEmpty) {
           return context.read<TravelCubit>().allItems;
         }
-        // return state is TravelItemsLoaded ? state.items : context.read<TravelCubit>().allItems;
-      },
-      builder: (context, state) {
-        return ListView.builder(
-          itemCount: state.length,
-          scrollDirection: Axis.horizontal,
-          itemBuilder: (context, index) {
-            return Card(
-              child: SizedBox(width: context.sized.dynamicWidth(0.37), child: Image.asset(state[index].imagePath)),
-            );
-          },
-        );
-      },
-    );
-  }
-}
-
-class TravelView2 extends StatefulWidget {
-  const TravelView2({super.key});
-
-  @override
-  State<TravelView2> createState() => _TravelView2State();
-}
-
-class _TravelView2State extends State<TravelView2> {
-  @override
-  Widget build(BuildContext context) {
-    return BlocProvider<TravelViewModel>(
-      create: (context) => TravelViewModel(),
-      child: BlocConsumer<TravelViewModel, TravelState>(
-        listener: (context, state) {},
-        builder: (context, state) {
-          final read = context.read<TravelViewModel>;
-          // ignore: unused_local_variable
-          final watch = context.watch<TravelViewModel>;
-          return Scaffold(
-            appBar: AppBar(
-              actions: [
-                Center(
-                  child: state.isLoading ? const CircularProgressIndicator() : null,
-                )
-              ],
-            ),
-            body: Padding(
-              padding: context.padding.normal,
-              child: Column(
-                children: [
-                  _boldText(context, StringConstant.travelHeyJohn),
-                  context.sized.emptySizedHeightBoxLow3x,
-                  TextField(
-                    onChanged: (value) {
-                      read().searchByItems(value);
-                    },
-                    decoration:
-                        const InputDecoration(prefixIcon: Icon(Icons.search_outlined), border: OutlineInputBorder()),
-                  ),
-                  context.sized.emptySizedHeightBoxLow3x,
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      _boldText(context, StringConstant.travelPopDes),
-                      InkWell(
-                        onTap: () {
-                          read().seeAllItems();
-                        },
-                        child: Text(
-                          StringConstant.travelSeeAll,
-                          style: context.general.textTheme.titleLarge
-                              ?.copyWith(color: ColorConstant.colorBlue, decoration: TextDecoration.underline),
-                        ),
-                      )
-                    ],
-                  ),
-                  context.sized.emptySizedHeightBoxLow3x,
-                  SizedBox(
-                    height: context.sized.dynamicHeight(0.26),
-                    child: _itemsCastale2(context),
-                  ),
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: state.images?.length ?? 0,
-                      itemBuilder: (BuildContext context, int index) {
-                        final image = state.images?[index];
-                        return image;
-                      },
-                    ),
-                  )
-                ],
-              ),
-            ),
+        return context.read<TravelCubit>().result;
+      } else if (state is TravelItemsLoaded) {
+        return state.items;
+      } else {
+        return context.read<TravelCubit>().allItems;
+      }
+      // return state is TravelItemsLoaded ? state.items : context.read<TravelCubit>().allItems;
+    },
+    builder: (context, state) {
+      return ListView.builder(
+        itemCount: state.length,
+        scrollDirection: Axis.horizontal,
+        itemBuilder: (context, index) {
+          return Card(
+            child: SizedBox(width: context.sized.dynamicWidth(0.37), child: Image.asset(state[index].imagePath)),
           );
         },
-      ),
-    );
-  }
-
-  Text _boldText(BuildContext context, String text) {
-    return Text(
-      text,
-      style: context.general.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
-    );
-  }
-
-  Widget _itemsCastale(BuildContext context) {
-    return BlocSelector<TravelViewModel, TravelState, List<TravelModel>>(
-      selector: (state) {
-        return state.items;
-      },
-      builder: (context, state) {
-        return ListView.builder(
-          itemCount: state.length,
-          scrollDirection: Axis.horizontal,
-          itemBuilder: (context, index) {
-            return Card(
-              child: SizedBox(width: context.sized.dynamicWidth(0.37), child: Image.asset(state[index].imagePath)),
-            );
-          },
-        );
-      },
-    );
-  }
-
-  Widget _itemsCastale2(BuildContext context) {
-    return BlocBuilder<TravelViewModel, TravelState>(
-      builder: (context, state) {
-        return ListView.builder(
-          scrollDirection: Axis.horizontal,
-          itemCount: state.items.length,
-          itemBuilder: (BuildContext context, int index) {
-            return Card(
-              child:
-                  SizedBox(width: context.sized.dynamicWidth(0.37), child: Image.asset(state.items[index].imagePath)),
-            );
-          },
-        );
-      },
-    );
-  }
+      );
+    },
+  );
 }

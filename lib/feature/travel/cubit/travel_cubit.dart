@@ -15,12 +15,6 @@ class TravelCubit extends Cubit<TravelStates> {
     emit(TravelItemsLoaded(allItems));
   }
 
-  Future<void> fetchItems2() async {
-    await Future.delayed(const Duration(seconds: 1));
-    allItems = TravelModel.mockItmes;
-    emit(TravelItemsLoadedAndSeeAll(allItems, [], isSeeAllActive: false));
-  }
-
   void searchByItems(String content) {
     result = allItems.where((element) => element.title.toLowerCase().contains(content)).toList();
     emit(TravelItemsLoaded(result));
@@ -48,12 +42,4 @@ class TravelItemsSeeAll extends TravelStates {
   final List<Image> images;
 
   TravelItemsSeeAll(this.images);
-}
-
-class TravelItemsLoadedAndSeeAll extends TravelStates {
-  final List<TravelModel> items;
-  final List<Image> images;
-  bool? isSeeAllActive;
-
-  TravelItemsLoadedAndSeeAll(this.items, this.images, {this.isSeeAllActive = false});
 }

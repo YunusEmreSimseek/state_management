@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:state_management/feature/travel/view/travel_view.dart';
+import 'package:state_management/feature/travel/view/travel_view_with_viewmodel.dart';
 
 class TravelTabView extends StatelessWidget {
   const TravelTabView({super.key});
@@ -23,7 +24,7 @@ class TravelTabView extends StatelessWidget {
             TravelView(),
             SizedBox.shrink(),
             SizedBox.shrink(),
-            TravelView2(),
+            TravelViewWithViewModel(),
           ]),
         ));
   }
